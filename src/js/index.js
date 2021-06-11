@@ -1,4 +1,5 @@
 /* Here goes your JS code */
+const mainSection = document.querySelector('.main');
 const popupDiv = document.querySelector('.popup');
 const showPopupBtn = document.getElementById('show-popup-form');
 const loginForm = popupDiv.querySelector('.popup__form');
@@ -18,6 +19,10 @@ loginForm.addEventListener('submit', submitForm);
 
 function submitForm(event){
   event.preventDefault();
+  //delete error msg(<p class="p--error">) if exists
+  if (loginForm.contains(loginForm.querySelector(".p--error"))) {
+    loginForm.querySelector(".p--error").remove();
+  }
   //get data from the <form>
   let form = new FormData(event.target);
   let userEmail = form.get("email");
@@ -25,9 +30,24 @@ function submitForm(event){
   let userPassword = form.get("pass");
   //check if email is valid and if user agrees to terms and conditions and if password has at least 5 characters
   if(validateEmail(userEmail) && userTerms==='yes' && userPassword.length >=5){
-    console.log("LOGED IN");
+    setTimeout(function(){
+      //hide popup div
+      popupDiv.classList.remove('popup--active');
+      //display "Thank you" msg & remove "Click me" text
+      let heading = document.createElement("H1");
+      let headingText = document.createTextNode("Thank you!");
+      heading.appendChild(headingText);
+      heading.classList.add("main__heading");
+      mainSection.innerHTML="";
+      mainSection.appendChild(heading);
+    }, 3000);
   }else{
-    console.log("Invalid form");
+    //show error msg if there is something wrong with the form
+    let errorElem = document.createElement("P");
+    let errorMsg = document.createTextNode("Please make sure that all values in the form are correct. Password has to have 5 characters or more");
+    errorElem.appendChild(errorMsg);
+    errorElem.classList.add("p--error");
+    loginForm.appendChild(errorElem);
   }
 }
 
